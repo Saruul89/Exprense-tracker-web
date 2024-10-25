@@ -64,6 +64,39 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/records", async (req, res) => {
+  const { name, amount, transaction_type } = req.body;
+  try {
+    const records = await sql`
+   
+      INSERT INTO "record" (name , amount, transaction_type)
+      VALUES (${name},${amount},${transaction_type})
+            RETURNING *
+    `;
+
+    res
+      .status(201)
+      .json({ message: "Record added successfully", record: records[0] });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Internal server error during record creation" });
+  }
+});
+
+app.get("/records", async (req, res) => {
+  try {
+    const records = await sql`SELECT * FROM "record" ORDER BY createdAt DESC`;
+    res.status(200).json(records);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Internal server error during fetching records" });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
