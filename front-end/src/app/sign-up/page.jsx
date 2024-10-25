@@ -71,7 +71,7 @@ const Signup = () => {
             </div>
             <div className="flex flex-col items-center gap-2 mb-11">
               <h1 className="leading-8 text-[24px] font-bold">
-                Create Geld account
+                Create Geld account...
               </h1>
               <p className="text-lg text-[#334155]">
                 Sign up below to create your Wallet account
