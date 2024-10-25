@@ -5,7 +5,7 @@ import ArrowUp from "./arrowUpDown/ArrowUp";
 import ArrowDown from "./arrowUpDown/ArrowDown";
 import BarChart from "../chart/BarChart";
 import PieChart from "../chart/PieChart";
-import HomeIcon from "@/components/record/HomeIcon";
+import HomeIcon from "@/components/record/icon/HomeIcon";
 
 const Hero = () => {
   return (

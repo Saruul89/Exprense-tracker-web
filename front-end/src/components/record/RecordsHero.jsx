@@ -1,6 +1,6 @@
-import HomeIcon from "./HomeIcon";
-import LeftArrow from "./LeftArrow";
-import RightArrow from "./RightArrow";
+import HomeIcon from "./icon/HomeIcon";
+import LeftArrow from "./icon/LeftArrow";
+import RightArrow from "./icon/RightArrow";
 
 const RecordsHero = () => {
   return (

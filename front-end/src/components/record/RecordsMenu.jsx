@@ -1,7 +1,8 @@
 "use client";
-import AddIconBlue from "./AddIconBlue";
+import AddIconBlue from "./icon/AddIconBlue";
 import AddRecordModal from "./AddRecordModal";
-import EyeIcon from "./EyeIcon";
+import EyeIcon from "./icon/EyeIcon";
+import AddCategoryInRecord from "./AddCategoryinRecord";
 
 const RecordsMenu = () => {
   return (
@@ -79,9 +80,18 @@ const RecordsMenu = () => {
         <EyeIcon />
         <p>Food & Drinks</p>
       </div>
-      <div className="flex gap-3">
-        <AddIconBlue />
-        <p>Add category</p>
+      <div>
+        {/* You can open the modal using document.getElementById('ID').showModal() method */}
+        <button
+          className="btn"
+          onClick={() =>
+            document.getElementById("my_modal_category").showModal()
+          }
+        >
+          <AddIconBlue />
+          Add category
+        </button>
+        <AddCategoryInRecord />
       </div>
     </div>
   );
