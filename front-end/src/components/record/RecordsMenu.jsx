@@ -3,8 +3,30 @@ import AddIconBlue from "./icon/AddIconBlue";
 import AddRecordModal from "./AddRecordModal";
 import EyeIcon from "./icon/EyeIcon";
 import AddCategoryInRecord from "./AddCategoryinRecord";
+import { BACKEND_ENDPOINT } from "@/constant/constant";
+import { useEffect, useState } from "react";
 
 const RecordsMenu = () => {
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(`${BACKEND_ENDPOINT}/category`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const responseData = await response.json();
+      setCategories(responseData);
+    } catch (error) {
+      console.error(error);
+      setError("Error occurred while fetching categories.");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
   return (
     <div className="w-[282px] border rounded-lg p-5 h-auto flex flex-col gap-5 bg-white">
       <h2 className="font-semibold text-2xl">Records</h2>
@@ -76,14 +98,23 @@ const RecordsMenu = () => {
         <h2 className="text-base font-semibold ">Category</h2>
         <button>clear</button>
       </div>
-      <div className="flex gap-3">
-        <EyeIcon />
-        <p>Food & Drinks</p>
-      </div>
+
       <div>
-        {/* You can open the modal using document.getElementById('ID').showModal() method */}
+        {categories.length > 0 ? (
+          categories.map((category, index) => (
+            <div key={index} className="flex items-center gap-3 mb-2">
+              <EyeIcon />
+              <p>{category.name}</p>
+            </div>
+          ))
+        ) : (
+          <p>Reading... or No categories available.</p>
+        )}
+      </div>
+
+      <div>
         <button
-          className="btn"
+          className="btn btn-primary w-full"
           onClick={() =>
             document.getElementById("my_modal_category").showModal()
           }

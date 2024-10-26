@@ -65,25 +65,25 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/records", async (req, res) => {
-  const { name, amount, transaction_type } = req.body;
+  const { name, amount, transaction_type, category, date, time, payee, note } = req.body;
+
+  if (!name || !amount || !transaction_type) {
+    return res.status(400).json({ message: "All fields are required" });
+  }
+
   try {
     const records = await sql`
-   
-      INSERT INTO "record" (name , amount, transaction_type)
-      VALUES (${name},${amount},${transaction_type})
-            RETURNING *
-    `;
+      INSERT INTO "record" (name, amount, transaction_type, category, date, time, payee, note)
+      VALUES (${name}, ${amount}, ${transaction_type}, ${category}, ${date}, ${time}, ${payee}, ${note})
+      RETURNING *`;
 
-    res
-      .status(201)
-      .json({ message: "Record added successfully", record: records[0] });
+    res.status(201).json({ message: "Record added successfully", record: records[0] });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ message: "Internal server error during record creation" });
+    res.status(500).json({ message: "Internal server error during record creation" });
   }
 });
+
 
 app.get("/records", async (req, res) => {
   try {
@@ -94,6 +94,36 @@ app.get("/records", async (req, res) => {
     res
       .status(500)
       .json({ message: "Internal server error during fetching records" });
+  }
+});
+
+app.post("/category", async (req, res) => {
+  const { name, category_icon, icon_color } = req.body;
+  try {
+    const category = await sql`
+    INSERT INTO "category" (name, category_icon, icon_color)
+    VALUES (${name}, ${category_icon}, ${icon_color})
+    RETURNING *
+    `;
+    res
+      .status(201)
+      .json({ message: "Category add successfully", category: category[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "category backendees awch chadsangue" });
+  }
+});
+
+app.get("/category", async (req, res) => {
+  try {
+    const category =
+      await sql`SELECT * FROM "category" ORDER BY createdAt DESC`;
+    res.status(200).json(category);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Internal server error during fetching category" });
   }
 });
 
