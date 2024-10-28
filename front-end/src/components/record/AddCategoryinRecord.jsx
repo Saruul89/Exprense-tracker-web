@@ -57,8 +57,8 @@ const AddCategoryInRecord = () => {
 
     const category = {
       name: selectedIconName,
-      color: selectedColor,
-      icon: selectedIconName, 
+      icon_color: selectedColor,
+      category_icon: selectedIconName,
     };
 
     try {
@@ -71,11 +71,12 @@ const AddCategoryInRecord = () => {
       };
       const response = await fetch(`${BACKEND_ENDPOINT}/category`, options);
 
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
 
       const data = await response.json();
       console.log("Category added:", data);
-      document.getElementById("my_modal_category").close()
+      document.getElementById("my_modal_category").close();
     } catch (error) {
       console.error("Error occurred during submission:", error);
     }

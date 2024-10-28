@@ -57,8 +57,14 @@ const RecordsHero = () => {
             <div className="flex items-center justify-between p-3">
               {record.category_icon}
               <p>{record.name}</p>
-              <p className="flex items-center p-3 text-red-600 font-bold">
-                +{record.amount}
+              <p
+                className={`flex items-center p-3 font-bold ${
+                  record.transaction_type === "EXP"
+                    ? "text-red-600"
+                    : "text-green-600"
+                }`}
+              >
+                {record.transaction_type === "EXP" ? "-" : "+"} {record.amount}
               </p>
             </div>
           </div>

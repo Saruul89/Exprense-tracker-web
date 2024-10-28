@@ -65,25 +65,35 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/records", async (req, res) => {
-  const { name, amount, transaction_type, category, date, time, payee, note } = req.body;
+  const {
+    name,
+    amount,
+    transaction_type,
+    category_id,
+    description,
+    createdat,
+  } = req.body;
 
-  if (!name || !amount || !transaction_type) {
+  if (!name || !amount) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
     const records = await sql`
-      INSERT INTO "record" (name, amount, transaction_type, category, date, time, payee, note)
-      VALUES (${name}, ${amount}, ${transaction_type}, ${category}, ${date}, ${time}, ${payee}, ${note})
+      INSERT INTO "record" (name, amount, transaction_type, category_id, description, createdat)
+      VALUES (${name}, ${amount}, ${transaction_type}, ${category_id}, ${description}, ${createdat})
       RETURNING *`;
 
-    res.status(201).json({ message: "Record added successfully", record: records[0] });
+    res
+      .status(201)
+      .json({ message: "Record added successfully", record: records[0] });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error during record creation" });
+    res
+      .status(500)
+      .json({ message: "Internal server error during record creation" });
   }
 });
-
 
 app.get("/records", async (req, res) => {
   try {
