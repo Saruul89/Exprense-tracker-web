@@ -86,11 +86,11 @@ const AddCategoryInRecord = () => {
     <div>
       <dialog id="my_modal_category" className="modal">
         <div className="modal-box">
-          <form method="dialog">
+          <div method="dialog">
             <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              ✕
+              esc
             </button>
-          </form>
+          </div>
           <h3 className="font-bold text-lg mb-3">Add Category</h3>
           <div className="flex flex-col gap-3">
             <div className="flex gap-4 items-center">

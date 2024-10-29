@@ -1,8 +1,8 @@
 "use client";
-import AddIconBlue from "./icon/AddIconBlue";
+
+import AddCategoryModal from "./addRecordAll/AddCategoryModal";
 import AddRecordModal from "./AddRecordModal";
 import EyeIcon from "./icon/EyeIcon";
-import AddCategoryInRecord from "./AddCategoryinRecord";
 import { BACKEND_ENDPOINT } from "@/constant/constant";
 import { useEffect, useState } from "react";
 
@@ -25,7 +25,7 @@ const RecordsMenu = () => {
 
   useEffect(() => {
     fetchCategory();
-  }, []);
+  }, [categories]);
 
   return (
     <div className="w-[282px] border rounded-lg p-5 h-auto flex flex-col gap-5 bg-white">
@@ -94,7 +94,7 @@ const RecordsMenu = () => {
           </label>
         </div>
       </div>
-      <div className="flex justify-between mb-5">
+      <div className="flex justify-between mb-2">
         <h2 className="text-base font-semibold ">Category</h2>
         <button>clear</button>
       </div>
@@ -108,22 +108,12 @@ const RecordsMenu = () => {
             </div>
           ))
         ) : (
-          <p>Reading... or No categories available.</p>
+          <p className="text-red-400 font-bold">
+            Reading... or No categories available.
+          </p>
         )}
       </div>
-
-      <div>
-        <button
-          className="btn btn-primary w-full"
-          onClick={() =>
-            document.getElementById("my_modal_category").showModal()
-          }
-        >
-          <AddIconBlue />
-          Add category
-        </button>
-        <AddCategoryInRecord />
-      </div>
+      <AddCategoryModal />
     </div>
   );
 };

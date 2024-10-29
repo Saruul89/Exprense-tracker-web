@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HomeIcon from "./icon/HomeIcon";
 import LeftArrow from "./icon/LeftArrow";
 import RightArrow from "./icon/RightArrow";
 import { BACKEND_ENDPOINT } from "@/constant/constant";
@@ -9,6 +8,7 @@ import { BACKEND_ENDPOINT } from "@/constant/constant";
 const RecordsHero = () => {
   const [records, setRecords] = useState([]);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
 
   const fetchRecords = async () => {
     try {
@@ -25,7 +25,24 @@ const RecordsHero = () => {
 
   useEffect(() => {
     fetchRecords();
-  }, []);
+  }, [records]);
+
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(`${BACKEND_ENDPOINT}/category`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const responseData = await response.json();
+      setCategories(responseData);
+    } catch (error) {
+      console.error(error);
+      setError("Error occurred while fetching categories.");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategory();
+  }, [categories]);
 
   return (
     <div className="container">
@@ -55,7 +72,14 @@ const RecordsHero = () => {
             className="card bg-base-100 rounded-box h-15 flex flex-col mt-4"
           >
             <div className="flex items-center justify-between p-3">
-              {record.category_icon}
+              {categories.map((category) => {
+                if (category.id === record.category_id) {
+                  return (
+                    <span key={category.id}>{category.category_icon}</span>
+                  );
+                }
+                return null;
+              })}
               <p>{record.name}</p>
               <p
                 className={`flex items-center p-3 font-bold ${
@@ -70,7 +94,9 @@ const RecordsHero = () => {
           </div>
         ))
       ) : (
-        <p>Reading... or No records available.</p>
+        <p className="text-red-400 font-bold">
+          Reading... or No records available.
+        </p>
       )}
     </div>
   );

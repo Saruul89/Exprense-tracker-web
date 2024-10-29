@@ -1,8 +1,11 @@
 "use client";
 import { BACKEND_ENDPOINT } from "@/constant/constant";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import AddCategoryModal from "./addRecordAll/AddCategoryModal";
 
 const AddRecordModal = () => {
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
   const [transactionType, setTransactionType] = useState("EXP");
   const [records, setRecords] = useState({
     name: "",
@@ -23,23 +26,38 @@ const AddRecordModal = () => {
     setRecords((prevRecords) => ({ ...prevRecords, [name]: value }));
   };
 
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(`${BACKEND_ENDPOINT}/category`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const responseData = await response.json();
+      setCategories(responseData);
+    } catch (error) {
+      console.error(error);
+      setError("Error occurred while fetching categories.");
+    }
+  };
+
+  useEffect(() => {
+    fetchCategory();
+  }, [categories]);
+
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     try {
       const response = await fetch(`${BACKEND_ENDPOINT}/records`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(records),
       });
 
       if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
 
-      const data = await response.json();
-      console.log("Record added successfully:", data);
+      console.log("Record added successfully:");
+
       setRecords({
         name: "",
         amount: "",
@@ -101,10 +119,16 @@ const AddRecordModal = () => {
             onChange={handleInputChange}
             className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           >
-            <option value="">Choose</option>
-            <option value="Food">Food</option>
-            <option value="Rent">Rent</option>
+            <option value="" disabled>
+              Select a category
+            </option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.icon} {category.name}
+              </option>
+            ))}
           </select>
+          <AddCategoryModal />
         </div>
 
         <div className="flex justify-between mb-4">
@@ -156,6 +180,7 @@ const AddRecordModal = () => {
 
         <button
           type="submit"
+          onClick={() => document.getElementById("my_modal_3").close()}
           className={`w-full py-2 text-white font-semibold rounded-lg ${
             transactionType === "EXP" ? "bg-blue-500" : "bg-green-500"
           }`}
