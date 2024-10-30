@@ -17,9 +17,9 @@ import { BACKEND_ENDPOINT } from "@/constant/constant";
 
 const AddCategoryInRecord = () => {
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedIcon, setSelectedIcon] = useState(<FaHome />);
+  const [selectedIcon, setSelectedIcon] = useState("Home");
   const [selectedColor, setSelectedColor] = useState("bg-green-500");
-  const [selectedIconName, setSelectedIconName] = useState("Home");
+  const [selectedCategoryName, setSelectedCategoryName] = useState("Home");
 
   const icons = [
     { icon: <FaHome />, name: "Home" },
@@ -44,24 +44,26 @@ const AddCategoryInRecord = () => {
   ];
 
   const handleClickIcon = (icon, name) => {
-    setSelectedIcon(icon);
-    setSelectedIconName(name);
+    setSelectedIcon(name); // アイコン名だけを保存
+    setSelectedCategoryName(name);
   };
 
   const handleInputChange = (e) => {
-    setSelectedIconName(e.target.value);
+    setSelectedCategoryName(e.target.value);
   };
 
   const handleCreateSubmit = async (event) => {
     event.preventDefault();
 
     const category = {
-      name: selectedIconName,
+      name: selectedCategoryName,
       icon_color: selectedColor,
-      category_icon: selectedIconName,
+      category_icon: selectedIcon, // アイコン名を保存
     };
 
     try {
+      console.log(category);
+
       const options = {
         method: "POST",
         headers: {
@@ -69,6 +71,7 @@ const AddCategoryInRecord = () => {
         },
         body: JSON.stringify(category),
       };
+
       const response = await fetch(`${BACKEND_ENDPOINT}/category`, options);
 
       if (!response.ok)
@@ -98,14 +101,14 @@ const AddCategoryInRecord = () => {
                 onClick={() => setShowDropdown(!showDropdown)}
                 className={`rounded-lg w-[84px] h-[48px] ${selectedColor} text-white flex justify-start pl-3 items-center`}
               >
-                {selectedIcon}
+                {icons.find((icon) => icon.name === selectedIcon)?.icon}
                 <div className="ml-2">
                   <ArrowDown />
                 </div>
               </button>
               <input
                 type="text"
-                value={selectedIconName}
+                value={selectedCategoryName}
                 onChange={handleInputChange}
                 placeholder="name"
                 className="border p-3 rounded-lg w-full"
