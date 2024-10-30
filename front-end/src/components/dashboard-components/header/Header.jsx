@@ -1,10 +1,17 @@
 "use client";
 
+import { useState } from "react"; 
 import LoginLogo from "@/components/login/LoginLogo";
 import AddRecordModal from "@/components/record/AddRecordModal";
 import Link from "next/link";
 
 const Header = () => {
+  const [activeLink, setActiveLink] = useState("");
+
+  const handleClick = (link) => {
+    setActiveLink(link); 
+  };
+
   return (
     <div className="w-full">
       <div className="container max-w-[1260px] m-auto my-8">
@@ -12,10 +19,20 @@ const Header = () => {
           <div className="flex gap-5">
             <LoginLogo />
             <Link href="/dashboard">
-              <div className="text-base">Dashboard </div>
+              <div
+                onClick={() => handleClick("dashboard")}
+                className={`text-base ${activeLink === "dashboard" ? "font-bold" : "font-normal"}`}
+              >
+                Dashboard
+              </div>
             </Link>
             <Link href="/records">
-              <div className="text-base">Records</div>
+              <div
+                onClick={() => handleClick("records")} 
+                className={`text-base ${activeLink === "records" ? "font-bold" : "font-normal"}`} 
+              >
+                Records
+              </div>
             </Link>
           </div>
           <div className="flex gap-5">
@@ -46,4 +63,5 @@ const Header = () => {
     </div>
   );
 };
+
 export default Header;

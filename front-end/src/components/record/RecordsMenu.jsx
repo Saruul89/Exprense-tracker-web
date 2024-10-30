@@ -5,10 +5,26 @@ import AddRecordModal from "./AddRecordModal";
 import EyeIcon from "./icon/EyeIcon";
 import { BACKEND_ENDPOINT } from "@/constant/constant";
 import { useEffect, useState } from "react";
+import RecordsHero from "./RecordsHero";
 
 const RecordsMenu = () => {
+  const [records, setRecords] = useState([]);
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState("all");
+
+  const fetchRecords = async () => {
+    try {
+      const response = await fetch(`${BACKEND_ENDPOINT}/records`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const responseData = await response.json();
+      setRecords(responseData);
+    } catch (error) {
+      console.error(error);
+      setError("Error occurred while fetching records.");
+    }
+  };
 
   const fetchCategory = async () => {
     try {
@@ -25,7 +41,15 @@ const RecordsMenu = () => {
 
   useEffect(() => {
     fetchCategory();
-  }, [categories]);
+    fetchRecords();
+  }, []);
+
+  const filteredRecords = records.filter((record) => {
+    if (filter === "all") return true;
+    if (filter === "INC") return record.type === "INC"; 
+    if (filter === "EXP") return record.type === "EXP";
+    return false;
+  });
 
   return (
     <div className="w-[282px] border rounded-lg p-5 h-auto flex flex-col gap-5 bg-white">
@@ -63,34 +87,41 @@ const RecordsMenu = () => {
           />
         </svg>
       </label>
+
       <div>
         <h2 className="text-base font-semibold mb-5">Types</h2>
-        <div className="form-control flex items-start">
-          <label className="label cursor-pointer flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                defaultChecked
-                className="checkbox rounded-full"
-              />
-              <span className="label-text">All</span>
-            </div>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">All</span>
+            <input
+              type="radio"
+              name="radio-10"
+              className="radio checked:bg-red-500"
+              defaultChecked
+              onChange={() => setFilter("all")} 
+            />
           </label>
         </div>
-        <div className="form-control flex items-start">
-          <label className="label cursor-pointer flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <input type="checkbox" className="checkbox rounded-full" />
-              <span className="label-text">Income</span>
-            </div>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">Income</span>
+            <input
+              type="radio"
+              name="radio-10"
+              className="radio checked:bg-blue-500"
+              onChange={() => setFilter("INC")} 
+            />
           </label>
         </div>
-        <div className="form-control flex items-start">
-          <label className="label cursor-pointer flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <input type="checkbox" className="checkbox rounded-full" />
-              <span className="label-text">Expense</span>
-            </div>
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">Expense</span>
+            <input
+              type="radio"
+              name="radio-10"
+              className="radio checked:bg-blue-500"
+              onChange={() => setFilter("EXP")} 
+            />
           </label>
         </div>
       </div>
