@@ -7,7 +7,6 @@ const DashboardPage = () => {
     <div>
       <Header />
       <Hero />
-
     </div>
   );
 };

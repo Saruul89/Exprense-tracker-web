@@ -6,6 +6,7 @@ import EyeIcon from "./icon/EyeIcon";
 import { BACKEND_ENDPOINT } from "@/constant/constant";
 import { useEffect, useState } from "react";
 import RecordsHero from "./RecordsHero";
+import Search from "./search/Search";
 
 const RecordsMenu = () => {
   const [records, setRecords] = useState([]);
@@ -46,7 +47,7 @@ const RecordsMenu = () => {
 
   const filteredRecords = records.filter((record) => {
     if (filter === "all") return true;
-    if (filter === "INC") return record.type === "INC"; 
+    if (filter === "INC") return record.type === "INC";
     if (filter === "EXP") return record.type === "EXP";
     return false;
   });
@@ -72,21 +73,7 @@ const RecordsMenu = () => {
         </div>
       </dialog>
 
-      <label className="input input-bordered flex items-center gap-2">
-        <input type="text" className="grow" placeholder="Search" />
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 16 16"
-          fill="currentColor"
-          className="h-4 w-4 opacity-70"
-        >
-          <path
-            fillRule="evenodd"
-            d="M9.965 11.026a5 5 0 1 1 1.06-1.06l2.755 2.754a.75.75 0 1 1-1.06 1.06l-2.755-2.754ZM10.5 7a3.5 3.5 0 1 1-7 0 3.5 3.5 0 0 1 7 0Z"
-            clipRule="evenodd"
-          />
-        </svg>
-      </label>
+      <Search />
 
       <div>
         <h2 className="text-base font-semibold mb-5">Types</h2>
@@ -98,7 +85,7 @@ const RecordsMenu = () => {
               name="radio-10"
               className="radio checked:bg-red-500"
               defaultChecked
-              onChange={() => setFilter("all")} 
+              onChange={() => setFilter("all")}
             />
           </label>
         </div>
@@ -109,7 +96,7 @@ const RecordsMenu = () => {
               type="radio"
               name="radio-10"
               className="radio checked:bg-blue-500"
-              onChange={() => setFilter("INC")} 
+              onChange={() => setFilter("INC")}
             />
           </label>
         </div>
@@ -120,7 +107,7 @@ const RecordsMenu = () => {
               type="radio"
               name="radio-10"
               className="radio checked:bg-blue-500"
-              onChange={() => setFilter("EXP")} 
+              onChange={() => setFilter("EXP")}
             />
           </label>
         </div>

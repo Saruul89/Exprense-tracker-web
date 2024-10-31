@@ -3,6 +3,9 @@ import RecordsHero from "@/components/record/RecordsHero";
 import RecordsMenu from "@/components/record/RecordsMenu";
 
 const RecordsPage = () => {
+
+  
+
   return (
     <div>
       <Header />
