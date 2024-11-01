@@ -2,30 +2,13 @@
 
 import AddCategoryModal from "./addRecordAll/AddCategoryModal";
 import AddRecordModal from "./AddRecordModal";
-import EyeIcon from "./icon/EyeIcon";
 import { BACKEND_ENDPOINT } from "@/constant/constant";
 import { useEffect, useState } from "react";
-import RecordsHero from "./RecordsHero";
 import Search from "./search/Search";
 
-const RecordsMenu = () => {
-  const [records, setRecords] = useState([]);
+const RecordsMenu = ({ setFilter, filterCate, setFilterCate }) => {
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState("all");
-
-  const fetchRecords = async () => {
-    try {
-      const response = await fetch(`${BACKEND_ENDPOINT}/records`);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const responseData = await response.json();
-      setRecords(responseData);
-    } catch (error) {
-      console.error(error);
-      setError("Error occurred while fetching records.");
-    }
-  };
 
   const fetchCategory = async () => {
     try {
@@ -40,17 +23,16 @@ const RecordsMenu = () => {
     }
   };
 
+  const handleCheckboxChange = (categoryId) => {
+    setFilterCate((prevState) => ({
+      ...prevState,
+      [categoryId]: !prevState[categoryId],
+    }));
+  };
+
   useEffect(() => {
     fetchCategory();
-    fetchRecords();
   }, []);
-
-  const filteredRecords = records.filter((record) => {
-    if (filter === "all") return true;
-    if (filter === "INC") return record.type === "INC";
-    if (filter === "EXP") return record.type === "EXP";
-    return false;
-  });
 
   return (
     <div className="w-[282px] border rounded-lg p-5 h-auto flex flex-col gap-5 bg-white">
@@ -121,7 +103,27 @@ const RecordsMenu = () => {
         {categories.length > 0 ? (
           categories.map((category, index) => (
             <div key={index} className="flex items-center gap-3 mb-2">
-              <EyeIcon />
+              <label className="swap swap-flip w-[35px] h-[35px] ">
+                <input
+                  type="checkbox"
+                  checked={!filterCate[category.id]}
+                  onChange={() => handleCheckboxChange(category.id)}
+                />
+                <div className="swap-off ">
+                  <img
+                    className="w-[25px]"
+                    src="https://cdn-icons-png.flaticon.com/128/159/159604.png"
+                    alt=""
+                  />
+                </div>
+                <div className="swap-on">
+                  <img
+                    className="w-[25px]"
+                    src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
+                    alt=""
+                  />
+                </div>
+              </label>
               <p>{category.name}</p>
             </div>
           ))

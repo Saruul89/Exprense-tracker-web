@@ -29,7 +29,7 @@ const icons = {
   Exam: <PiExamFill />,
 };
 
-const RecordsHero = () => {
+const RecordsHero = ({ filteredRecords, filterCategory }) => {
   const [records, setRecords] = useState([]);
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -89,8 +89,8 @@ const RecordsHero = () => {
           </select>
         </div>
       </div>
-      {records.length > 0 ? (
-        records.map((record, index) => (
+      {filterCategory.length > 0 ? (
+        filterCategory.map((record, index) => (
           <div
             key={index}
             className="card bg-base-100 rounded-box h-15 flex flex-col mt-4"

@@ -41,7 +41,7 @@ const AddRecordModal = () => {
 
   useEffect(() => {
     fetchCategory();
-  }, [categories]);
+  }, []);
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();

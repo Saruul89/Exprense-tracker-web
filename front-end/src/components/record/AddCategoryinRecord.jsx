@@ -62,8 +62,6 @@ const AddCategoryInRecord = () => {
     };
 
     try {
-      console.log(category);
-
       const options = {
         method: "POST",
         headers: {
@@ -85,13 +83,21 @@ const AddCategoryInRecord = () => {
     }
   };
 
+  const closeModal = () => {
+    document.getElementById("my_modal_category").close();
+  };
+
   return (
     <div>
       <dialog id="my_modal_category" className="modal">
         <div className="modal-box">
           <div method="dialog">
-            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
-              esc
+            <button
+              type="button"
+              onClick={closeModal}
+              className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+            >
+              x
             </button>
           </div>
           <h3 className="font-bold text-lg mb-3">Add Category</h3>
