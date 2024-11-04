@@ -29,45 +29,7 @@ const icons = {
   Exam: <PiExamFill />,
 };
 
-const RecordsHero = ({ filteredRecords, filterCategory }) => {
-  const [records, setRecords] = useState([]);
-  const [error, setError] = useState(null);
-  const [categories, setCategories] = useState([]);
-
-  const fetchRecords = async () => {
-    try {
-      const response = await fetch(`${BACKEND_ENDPOINT}/records`);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const responseData = await response.json();
-      setRecords(responseData);
-    } catch (error) {
-      console.error(error);
-      setError("Error occurred while fetching records.");
-    }
-  };
-
-  useEffect(() => {
-    fetchRecords();
-  }, []);
-
-  const fetchCategory = async () => {
-    try {
-      const response = await fetch(`${BACKEND_ENDPOINT}/category`);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const responseData = await response.json();
-      setCategories(responseData);
-    } catch (error) {
-      console.error(error);
-      setError("Error occurred while fetching categories.");
-    }
-  };
-
-  useEffect(() => {
-    fetchCategory();
-  }, []);
-
+const RecordsHero = ({ records, setTranType, setCateType, categories }) => {
   return (
     <div className="container">
       <div className="flex justify-between">
@@ -89,8 +51,8 @@ const RecordsHero = ({ filteredRecords, filterCategory }) => {
           </select>
         </div>
       </div>
-      {filterCategory.length > 0 ? (
-        filterCategory.map((record, index) => (
+      {records?.length > 0 ? (
+        records.map((record, index) => (
           <div
             key={index}
             className="card bg-base-100 rounded-box h-15 flex flex-col mt-4"

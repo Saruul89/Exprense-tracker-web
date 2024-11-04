@@ -8,35 +8,48 @@ import { useEffect, useState } from "react";
 
 const RecordsPage = () => {
   const [records, setRecords] = useState([]);
-  const [filter, setFilter] = useState("all");
-  const [filterCate, setFilterCate] = useState(records);
+  const [tranType, setTranType] = useState("all");
+  const [cateType, setCateType] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [error, setError] = useState(null);
 
   const fetchRecords = async () => {
     try {
-      const response = await fetch(`${BACKEND_ENDPOINT}/records`);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
+      let url;
+      if (tranType !== "all" && cateType !== "all") {
+        url = `${BACKEND_ENDPOINT}/records/${tranType}/${cateType}`;
+      } else if (tranType !== "all") {
+        url = `${BACKEND_ENDPOINT}/records/${tranType}`;
+      } else if (cateType) {
+        url = `${BACKEND_ENDPOINT}/records/category/${cateType}`;
+      } else {
+        url = `${BACKEND_ENDPOINT}/records`;
+      }
+
+      const response = await fetch(url);
       const responseData = await response.json();
-      setRecords(responseData);
+      setRecords(responseData.data);
     } catch (error) {
-      console.error(error);
-      setError("Error occurred while fetching records.");
+      console.log(error);
     }
   };
 
-  const filterCategory = records.filter(
-    (record) => filterCate[record.category_id]
-  );
-
-  const filteredRecords = records.filter((record) => {
-    if (filter === "all") return true;
-    if (filter === "INC") return record.transaction_type === "INC";
-    if (filter === "EXP") return record.transaction_type === "EXP";
-    return false;
-  });
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(`${BACKEND_ENDPOINT}/category`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const responseData = await response.json();
+      setCategories(responseData);
+    } catch (error) {
+      console.error(error);
+      setError("Error occurred while fetching categories.");
+    }
+  };
 
   useEffect(() => {
     fetchRecords();
+    fetchCategory();
   }, []);
 
   return (
@@ -45,13 +58,16 @@ const RecordsPage = () => {
       <div className="w-full bg-gray-100 h-screen">
         <div className="container m-auto max-w-[1260px] pt-[80px] flex gap-8">
           <RecordsMenu
-            setFilter={setFilter}
-            filterCate={filterCate}
-            setFilterCate={setFilterCate}
+            records={records}
+            setTranType={setTranType}
+            setCateType={setCateType}
+            categories={categories}
           />
           <RecordsHero
-            filteredRecords={filteredRecords}
-            filterCategory={filterCategory}
+            records={records}
+            setTranType={setTranType}
+            setCateType={setCateType}
+            categories={categories}
           />
         </div>
       </div>

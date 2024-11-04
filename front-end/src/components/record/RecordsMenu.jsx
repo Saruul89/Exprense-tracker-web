@@ -6,22 +6,8 @@ import { BACKEND_ENDPOINT } from "@/constant/constant";
 import { useEffect, useState } from "react";
 import Search from "./search/Search";
 
-const RecordsMenu = ({ setFilter, filterCate, setFilterCate }) => {
-  const [categories, setCategories] = useState([]);
-  const [error, setError] = useState(null);
-
-  const fetchCategory = async () => {
-    try {
-      const response = await fetch(`${BACKEND_ENDPOINT}/category`);
-      if (!response.ok)
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      const responseData = await response.json();
-      setCategories(responseData);
-    } catch (error) {
-      console.error(error);
-      setError("Error occurred while fetching categories.");
-    }
-  };
+const RecordsMenu = ({ records, setTranType, setCateType, categories }) => {
+  const [filterCate, setFilterCate] = useState("");
 
   const handleCheckboxChange = (categoryId) => {
     setFilterCate((prevState) => ({
@@ -29,10 +15,6 @@ const RecordsMenu = ({ setFilter, filterCate, setFilterCate }) => {
       [categoryId]: !prevState[categoryId],
     }));
   };
-
-  useEffect(() => {
-    fetchCategory();
-  }, []);
 
   return (
     <div className="w-[282px] border rounded-lg p-5 h-auto flex flex-col gap-5 bg-white">
@@ -67,7 +49,7 @@ const RecordsMenu = ({ setFilter, filterCate, setFilterCate }) => {
               name="radio-10"
               className="radio checked:bg-red-500"
               defaultChecked
-              onChange={() => setFilter("all")}
+              onChange={() => setFilterCate("all")}
             />
           </label>
         </div>
@@ -78,7 +60,7 @@ const RecordsMenu = ({ setFilter, filterCate, setFilterCate }) => {
               type="radio"
               name="radio-10"
               className="radio checked:bg-blue-500"
-              onChange={() => setFilter("INC")}
+              onChange={() => setFilterCate("INC")}
             />
           </label>
         </div>
@@ -89,7 +71,7 @@ const RecordsMenu = ({ setFilter, filterCate, setFilterCate }) => {
               type="radio"
               name="radio-10"
               className="radio checked:bg-blue-500"
-              onChange={() => setFilter("EXP")}
+              onChange={() => setFilterCate("EXP")}
             />
           </label>
         </div>
