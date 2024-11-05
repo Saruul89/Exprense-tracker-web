@@ -6,13 +6,24 @@ import { BACKEND_ENDPOINT } from "@/constant/constant";
 import { useEffect, useState } from "react";
 import Search from "./search/Search";
 
-const RecordsMenu = ({ records, setTranType, setCateType, categories }) => {
-  const [filterCate, setFilterCate] = useState("");
+const RecordsMenu = ({
+  records,
+  setTranType,
+  setCateType,
+  categories,
+  tranType,
+}) => {
+  const [filterCate, setFilterCate] = useState({});
 
+  const handleChange = (value) => {
+    setTranType(value);
+  };
+
+  // チェックボックスの変更を管理する
   const handleCheckboxChange = (categoryId) => {
     setFilterCate((prevState) => ({
       ...prevState,
-      [categoryId]: !prevState[categoryId],
+      [categoryId]: !prevState[categoryId], // チェックが入った場合、状態を反転
     }));
   };
 
@@ -47,9 +58,10 @@ const RecordsMenu = ({ records, setTranType, setCateType, categories }) => {
             <input
               type="radio"
               name="radio-10"
+              value="all"
               className="radio checked:bg-red-500"
-              defaultChecked
-              onChange={() => setFilterCate("all")}
+              checked={tranType === "all"}
+              onChange={() => handleChange("all")}
             />
           </label>
         </div>
@@ -59,8 +71,10 @@ const RecordsMenu = ({ records, setTranType, setCateType, categories }) => {
             <input
               type="radio"
               name="radio-10"
+              value="INC"
               className="radio checked:bg-blue-500"
-              onChange={() => setFilterCate("INC")}
+              checked={tranType === "INC"}
+              onChange={() => handleChange("INC")}
             />
           </label>
         </div>
@@ -70,35 +84,40 @@ const RecordsMenu = ({ records, setTranType, setCateType, categories }) => {
             <input
               type="radio"
               name="radio-10"
+              value="EXP"
               className="radio checked:bg-blue-500"
-              onChange={() => setFilterCate("EXP")}
+              checked={tranType === "EXP"}
+              onChange={() => handleChange("EXP")}
             />
           </label>
         </div>
       </div>
+
+      {/* Category */}
       <div className="flex justify-between mb-2">
         <h2 className="text-base font-semibold ">Category</h2>
-        <button>clear</button>
+        <button onClick={() => setFilterCate({})}>Clear</button>
+        {/* フィルタークリア機能 */}
       </div>
 
       <div>
         {categories.length > 0 ? (
-          categories.map((category, index) => (
-            <div key={index} className="flex items-center gap-3 mb-2">
+          categories.map((category) => (
+            <div key={category.id} className="flex items-center gap-3 mb-2">
               <label className="swap swap-flip w-[35px] h-[35px] ">
                 <input
                   type="checkbox"
-                  checked={!filterCate[category.id]}
-                  onChange={() => handleCheckboxChange(category.id)}
+                  checked={filterCate[category.id] || false}
+                  onChange={() => handleCheckboxChange(category.id)} // チェックボックスの状態を管理
                 />
-                <div className="swap-off ">
+                <div className="swap-on">
                   <img
                     className="w-[25px]"
                     src="https://cdn-icons-png.flaticon.com/128/159/159604.png"
                     alt=""
                   />
                 </div>
-                <div className="swap-on">
+                <div className="swap-off">
                   <img
                     className="w-[25px]"
                     src="https://cdn-icons-png.flaticon.com/128/2767/2767146.png"
@@ -119,4 +138,5 @@ const RecordsMenu = ({ records, setTranType, setCateType, categories }) => {
     </div>
   );
 };
+
 export default RecordsMenu;

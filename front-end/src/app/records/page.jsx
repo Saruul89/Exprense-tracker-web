@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 const RecordsPage = () => {
   const [records, setRecords] = useState([]);
   const [tranType, setTranType] = useState("all");
-  const [cateType, setCateType] = useState("");
+  const [cateType, setCateType] = useState("all");
   const [categories, setCategories] = useState([]);
   const [error, setError] = useState(null);
 
@@ -20,17 +20,19 @@ const RecordsPage = () => {
         url = `${BACKEND_ENDPOINT}/records/${tranType}/${cateType}`;
       } else if (tranType !== "all") {
         url = `${BACKEND_ENDPOINT}/records/${tranType}`;
-      } else if (cateType) {
+      } else if (cateType !== "all") {
         url = `${BACKEND_ENDPOINT}/records/category/${cateType}`;
       } else {
         url = `${BACKEND_ENDPOINT}/records`;
       }
-
       const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       const responseData = await response.json();
-      setRecords(responseData.data);
+      setRecords(responseData.data || []);
     } catch (error) {
-      console.log(error);
+      console.error("Error fetching records:", error);
     }
   };
 
@@ -40,9 +42,9 @@ const RecordsPage = () => {
       if (!response.ok)
         throw new Error(`HTTP error! Status: ${response.status}`);
       const responseData = await response.json();
-      setCategories(responseData);
+      setCategories(responseData || []);
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching categories:", error);
       setError("Error occurred while fetching categories.");
     }
   };
@@ -50,7 +52,7 @@ const RecordsPage = () => {
   useEffect(() => {
     fetchRecords();
     fetchCategory();
-  }, []);
+  }, [tranType, cateType]);
 
   return (
     <div>
@@ -62,6 +64,7 @@ const RecordsPage = () => {
             setTranType={setTranType}
             setCateType={setCateType}
             categories={categories}
+            tranType={tranType}
           />
           <RecordsHero
             records={records}

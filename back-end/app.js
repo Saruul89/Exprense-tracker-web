@@ -108,18 +108,16 @@ app.get("/records", async (req, res) => {
 });
 
 app.get("/records/:type/:cateType", async (req, response) => {
-  const { type: transaction_type, cateType: category_id } = req.params; // Use type and cateType as variable names
+  const { type: transaction_type, cateType: category_id } = req.params; 
   try {
     let sqlResponse;
 
-    // Check if both parameters are provided
     if (transaction_type && category_id) {
       sqlResponse = await sql`
         SELECT * FROM record
         WHERE transaction_type = ${transaction_type} AND category_id = ${category_id};
       `;
     } else {
-      // If no parameters, select all records
       sqlResponse = await sql`SELECT * FROM record;`;
     }
 
