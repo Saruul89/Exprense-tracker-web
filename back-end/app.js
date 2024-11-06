@@ -95,69 +95,37 @@ app.post("/records", async (req, res) => {
   }
 });
 
-app.get("/records", async (req, res) => {
-  try {
-    const records = await sql`SELECT * FROM "record" ORDER BY createdAt DESC`;
-    res.status(200).json(records);
-  } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Internal server error during fetching records" });
-  }
-});
+app.get("/records", async (req, response) => {
+  const { category, type } = req.query;
 
-app.get("/records/:type/:cateType", async (req, response) => {
-  const { type: transaction_type, cateType: category_id } = req.params; 
-  try {
-    let sqlResponse;
+  let sqlQuery;
 
-    if (transaction_type && category_id) {
-      sqlResponse = await sql`
+  // Ensure `category` is an array if it’s provided
+  const categoryArray = category ? JSON.parse(category) : [];
+
+  try {
+    if (type !== "all" && categoryArray.length > 0) {
+      sqlQuery = sql`
         SELECT * FROM record
-        WHERE transaction_type = ${transaction_type} AND category_id = ${category_id};
+        WHERE transaction_type = ${type} AND category_id = ANY(${sql(
+        categoryArray
+      )});
+      `;
+    } else if (type !== "all") {
+      sqlQuery = sql`
+        SELECT * FROM record
+        WHERE transaction_type = ${type};
+      `;
+    } else if (categoryArray.length > 0) {
+      sqlQuery = sql`
+        SELECT * FROM record
+        WHERE category_id = ANY(${sql(categoryArray)});
       `;
     } else {
-      sqlResponse = await sql`SELECT * FROM record;`;
+      sqlQuery = sql`SELECT * FROM record`;
     }
 
-    response.json({ data: sqlResponse, success: true });
-  } catch (error) {
-    response.json({ error: error.message, success: false });
-  }
-});
-
-app.get("/records/:type", async (req, response) => {
-  const { type: transaction_type } = req.params;
-  try {
-    let sqlResponse;
- 
-    if (transaction_type) {
-      sqlResponse = await sql`
-        SELECT * FROM record
-        WHERE transaction_type = ${transaction_type};
-      `;
-    } else {
-      sqlResponse = await sql`SELECT * FROM record;`;
-    }
- 
-    response.json({ data: sqlResponse, success: true });
-  } catch (error) {
-    response.json({ error: error.message, success: false });
-  }
-});
- 
-app.get("/records/category/:cateType", async (req, response) => {
-  const { cateType: category_id } = req.params;
- 
-  try {
-    let sqlResponse;
- 
-    sqlResponse = await sql`
-        SELECT * FROM record
-        WHERE category_id IN ${category_id};
-      `;
- 
+    const sqlResponse = await sqlQuery;
     response.json({ data: sqlResponse, success: true });
   } catch (error) {
     response.json({ error: error.message, success: false });

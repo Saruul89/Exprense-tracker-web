@@ -12,9 +12,11 @@ const RecordsMenu = ({
   setCateType,
   categories,
   tranType,
+  setRecords, // 新しいプロパティとしてsetRecordsを追加
 }) => {
   const [filterCate, setFilterCate] = useState({});
 
+  // トランザクションタイプの変更を管理
   const handleChange = (value) => {
     setTranType(value);
   };
@@ -26,6 +28,38 @@ const RecordsMenu = ({
       [categoryId]: !prevState[categoryId], // チェックが入った場合、状態を反転
     }));
   };
+
+  // カテゴリとトランザクションタイプに基づいてデータをフェッチ
+  const fetchFilteredRecords = async () => {
+    try {
+      const selectedCategories = Object.keys(filterCate).filter(
+        (key) => filterCate[key]
+      );
+      const url = `${BACKEND_ENDPOINT}/records?category=${JSON.stringify(
+        selectedCategories
+      )}&type=${tranType}`;
+
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.success) {
+        setRecords(data.data);
+      } else {
+        console.error("Failed to fetch records:", data.error);
+      }
+    } catch (error) {
+      console.error("Error fetching records:", error);
+    }
+  };
+
+  // フィルターが変更されるたびにデータをフェッチ
+  // RecordsMenu内
+  useEffect(() => {
+    const selectedCategories = Object.keys(filterCate).filter(
+      (key) => filterCate[key]
+    );
+    setCateType(selectedCategories); // `cateType`を更新
+  }, [filterCate]);
 
   return (
     <div className="w-[282px] border rounded-lg p-5 h-auto flex flex-col gap-5 bg-white">

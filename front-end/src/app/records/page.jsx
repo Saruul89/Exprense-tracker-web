@@ -15,24 +15,24 @@ const RecordsPage = () => {
 
   const fetchRecords = async () => {
     try {
-      let url;
-      if (tranType !== "all" && cateType !== "all") {
-        url = `${BACKEND_ENDPOINT}/records/${tranType}/${cateType}`;
-      } else if (tranType !== "all") {
-        url = `${BACKEND_ENDPOINT}/records/${tranType}`;
-      } else if (cateType !== "all") {
-        url = `${BACKEND_ENDPOINT}/records/category/${cateType}`;
-      } else {
-        url = `${BACKEND_ENDPOINT}/records`;
-      }
+      // `cateType`が配列でなければ空配列に変換
+      const categories = Array.isArray(cateType) ? cateType : [];
+
+      let url = `${BACKEND_ENDPOINT}/records?category=${JSON.stringify(
+        categories
+      )}&type=${tranType}`;
+      console.log(url);
+
       const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
       const responseData = await response.json();
-      setRecords(responseData.data || []);
+
+      if (responseData.success) {
+        setRecords(responseData.data);
+      } else {
+        console.error("Error fetching records:", responseData.error);
+      }
     } catch (error) {
-      console.error("Error fetching records:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -65,6 +65,7 @@ const RecordsPage = () => {
             setCateType={setCateType}
             categories={categories}
             tranType={tranType}
+            setRecords={setRecords}
           />
           <RecordsHero
             records={records}
