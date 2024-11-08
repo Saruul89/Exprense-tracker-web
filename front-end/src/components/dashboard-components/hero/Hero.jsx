@@ -6,8 +6,63 @@ import ArrowDown from "./arrowUpDown/ArrowDown";
 import BarChart from "../chart/BarChart";
 import PieChart from "../chart/PieChart";
 import HomeIcon from "@/components/record/icon/HomeIcon";
+import { useEffect, useState } from "react";
+import { BACKEND_ENDPOINT } from "@/constant/constant";
+import {
+  FaHome,
+  FaUser,
+  FaCar,
+  FaCamera,
+  FaAnchor,
+  FaBasketballBall,
+} from "react-icons/fa";
+import { PiBowlFoodFill, PiExamFill } from "react-icons/pi";
+import { IoIosMic } from "react-icons/io";
+import { RiStockLine } from "react-icons/ri";
+const icons = {
+  Home: <FaHome />,
+  Stock: <RiStockLine />,
+  Food: <PiBowlFoodFill />,
+  User: <FaUser />,
+  Car: <FaCar />,
+  Camera: <FaCamera />,
+  Anchor: <FaAnchor />,
+  Karaoke: <IoIosMic />,
+  Basketball: <FaBasketballBall />,
+  Exam: <PiExamFill />,
+};
 
 const Hero = () => {
+  const [records, setRecords] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const fetchRecords = async () => {
+    try {
+      const response = await fetch(`${BACKEND_ENDPOINT}/records`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const responseData = await response.json();
+      setRecords(responseData);
+    } catch (error) {
+      console.error(error);
+      setError("Error occurred while fetching records.");
+    }
+  };
+  const fetchCategory = async () => {
+    try {
+      const response = await fetch(`${BACKEND_ENDPOINT}/category`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const responseData = await response.json();
+      setCategories(responseData || []);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      setError("Error occurred while fetching categories.");
+    }
+  };
+  useEffect(() => {
+    fetchRecords();
+    fetchCategory();
+  }, []);
   return (
     <div className="w-full bg-gray-100">
       <div className="container max-w-[1260px] m-auto h-screen pt-[80px]">
@@ -61,14 +116,43 @@ const Hero = () => {
           <div className="card bg-base-100 border-b-2 h-17 place-items-start p-4 mt-4">
             <p className="text-lg font-bold">Last Record</p>
           </div>
-          <div className="card bg-base-100 border-b-2 h-15 flex flex-row justify-between ">
-            <div className="flex items-center gap-3 p-3">
-              <HomeIcon />
-              <p>Lending & Renting</p>
-            </div>
-            <p className="flex items-center p-3 text-green-600 font-bold">
-              + 1000₮
-            </p>
+          <div className="card bg-base-100 border-b-2 h-15 flex flex-col justify-between overflow-auto h-[30vh]">
+            {records.map((record) => (
+              <div
+                key={record.id}
+                className="card bg-base-100 rounded-box h-15 flex flex-col mt-4"
+              >
+                <div className="flex items-center p-3 justify-between">
+                  <div className="flex gap-8">
+                    {categories.map((category) => {
+                      if (category.id === record.category_id) {
+                        return (
+                          <span
+                            key={category.id}
+                            className={`p-2 rounded-lg ${category.icon_color}`}
+                          >
+                            {icons[category.category_icon]}
+                          </span>
+                        );
+                      }
+                      return null;
+                    })}
+                    <p>{record.name}</p>
+                  </div>
+
+                  <p
+                    className={`flex items-center p-3 font-bold ${
+                      record.transaction_type === "EXP"
+                        ? "text-red-600"
+                        : "text-green-600"
+                    }`}
+                  >
+                    {record.transaction_type === "EXP" ? "-" : "+"}{" "}
+                    {record.amount}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

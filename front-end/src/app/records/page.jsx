@@ -9,30 +9,21 @@ import { useEffect, useState } from "react";
 const RecordsPage = () => {
   const [records, setRecords] = useState([]);
   const [tranType, setTranType] = useState("all");
-  const [cateType, setCateType] = useState("all");
   const [categories, setCategories] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [error, setError] = useState(null);
+  const [filteredRecord, setFilteredRecord] = useState([]);
 
   const fetchRecords = async () => {
     try {
-      // `cateType`が配列でなければ空配列に変換
-      const categories = Array.isArray(cateType) ? cateType : [];
-
-      let url = `${BACKEND_ENDPOINT}/records?category=${JSON.stringify(
-        categories
-      )}&type=${tranType}`;
-      console.log(url);
-
-      const response = await fetch(url);
+      const response = await fetch(`${BACKEND_ENDPOINT}/records`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
       const responseData = await response.json();
-
-      if (responseData.success) {
-        setRecords(responseData.data);
-      } else {
-        console.error("Error fetching records:", responseData.error);
-      }
+      setRecords(responseData);
     } catch (error) {
-      console.error("Error:", error);
+      console.error(error);
+      setError("Error occurred while fetching records.");
     }
   };
 
@@ -52,7 +43,25 @@ const RecordsPage = () => {
   useEffect(() => {
     fetchRecords();
     fetchCategory();
-  }, [tranType, cateType]);
+  }, []);
+
+  useEffect(() => {
+    let filtered = records;
+
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((record) =>
+        selectedCategories.includes(record.category_id)
+      );
+    }
+
+    if (tranType !== "all") {
+      filtered = filtered.filter(
+        (record) => record.transaction_type === tranType
+      );
+    }
+
+    setFilteredRecord(filtered);
+  }, [tranType, selectedCategories, records]);
 
   return (
     <div>
@@ -60,22 +69,17 @@ const RecordsPage = () => {
       <div className="w-full bg-gray-100 h-screen">
         <div className="container m-auto max-w-[1260px] pt-[80px] flex gap-8">
           <RecordsMenu
-            records={records}
             setTranType={setTranType}
-            setCateType={setCateType}
             categories={categories}
             tranType={tranType}
-            setRecords={setRecords}
+            selectedCategories={selectedCategories}
+            setSelectedCategories={setSelectedCategories}
           />
-          <RecordsHero
-            records={records}
-            setTranType={setTranType}
-            setCateType={setCateType}
-            categories={categories}
-          />
+          <RecordsHero records={filteredRecord} categories={categories} />
         </div>
       </div>
     </div>
   );
 };
+
 export default RecordsPage;

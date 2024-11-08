@@ -95,40 +95,15 @@ app.post("/records", async (req, res) => {
   }
 });
 
-app.get("/records", async (req, response) => {
-  const { category, type } = req.query;
-
-  let sqlQuery;
-
-  // Ensure `category` is an array if it’s provided
-  const categoryArray = category ? JSON.parse(category) : [];
-
+app.get("/records", async (req, res) => {
   try {
-    if (type !== "all" && categoryArray.length > 0) {
-      sqlQuery = sql`
-        SELECT * FROM record
-        WHERE transaction_type = ${type} AND category_id = ANY(${sql(
-        categoryArray
-      )});
-      `;
-    } else if (type !== "all") {
-      sqlQuery = sql`
-        SELECT * FROM record
-        WHERE transaction_type = ${type};
-      `;
-    } else if (categoryArray.length > 0) {
-      sqlQuery = sql`
-        SELECT * FROM record
-        WHERE category_id = ANY(${sql(categoryArray)});
-      `;
-    } else {
-      sqlQuery = sql`SELECT * FROM record`;
-    }
-
-    const sqlResponse = await sqlQuery;
-    response.json({ data: sqlResponse, success: true });
+    const records = await sql`SELECT * FROM "record" ORDER BY createdAt DESC`;
+    res.status(200).json(records);
   } catch (error) {
-    response.json({ error: error.message, success: false });
+    console.error(error);
+    res
+      .status(500)
+      .json({ message: "Internal server error during fetching records" });
   }
 });
 

@@ -7,27 +7,13 @@ const Search = () => {
   const [recordsForSearch, setRecordsForSearch] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await fetch(`${BACKEND_ENDPOINT}/records`);
-  //     if (!response.ok)
-  //       throw new Error(`HTTP error! Status: ${response.status}`);
-  //     const data = await response.json();
-  //     setRecordsForSearch(data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
   const fetchData = async () => {
     try {
-      let url = `http://localhost:8100/records?category=${JSON.stringify(
-        cateType
-      )}&type=${tranType}`;
-      console.log(url);
-
-      const response = await fetch(url);
-      const responseData = await response.json();
-      setRecords(responseData.data);
+      const response = await fetch(`${BACKEND_ENDPOINT}/records`);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      const data = await response.json();
+      setRecordsForSearch(data);
     } catch (error) {
       console.log(error);
     }

@@ -132,7 +132,7 @@ const AddRecordModal = () => {
         </div>
 
         <div className="flex justify-between mb-4">
-          <div className="w-1/2 pr-2">
+          <div className="w-full pr-2">
             <label className="block text-gray-700">Date</label>
             <input
               type="date"
@@ -142,7 +142,7 @@ const AddRecordModal = () => {
               className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
-          <div className="w-1/2 pl-2">
+          {/* <div className="w-1/2 pl-2">
             <label className="block text-gray-700">Time</label>
             <input
               type="time"
@@ -151,7 +151,7 @@ const AddRecordModal = () => {
               onChange={handleInputChange}
               className="w-full px-4 py-2 mt-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-          </div>
+          </div> */}
         </div>
 
         <div className="mb-4">
