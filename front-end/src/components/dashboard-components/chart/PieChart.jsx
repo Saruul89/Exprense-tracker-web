@@ -9,7 +9,7 @@ const PieChart = () => {
     datasets: [
       {
         label: "Income - Expense",
-        data: [220000, 500000, 100000, 200000, 300000],
+        data: [2200, 5000, 3000, 1200, 4000],
         backgroundColor: [
           "#3366CC",
           "#FF6666",

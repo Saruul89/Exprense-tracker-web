@@ -94,7 +94,7 @@ const RecordsMenu = ({
       {/* Category */}
       <div className="flex justify-between mb-2">
         <h2 className="text-base font-semibold">Category</h2>
-        <button onClick={() => setSelectedCategories([])}>Clear</button>
+        {/* <button onClick={() => setSelectedCategories([])}>Clear</button> */}
       </div>
 
       <div>
