@@ -10,11 +10,12 @@ import { toast } from "react-toastify";
 const Header = () => {
   const [activeLink, setActiveLink] = useState("");
   const router = useRouter();
+
   const handleClick = (link) => {
     setActiveLink(link);
   };
 
-  const SignOut = () => {
+  const signOut = () => {
     localStorage.removeItem("isLoggedIn");
     router.push("/");
     toast.success("Successfully signed out!");
@@ -80,7 +81,7 @@ const Header = () => {
               <ul className="menu mt-1 dropdown-content w-48 p-1 rounded-lg ">
                 <li>
                   <button
-                    onClick={SignOut}
+                    onClick={signOut}
                     className="w-full px-4 py-2 text-left text-sm font-medium text-gray-700 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary transition ease-in-out duration-150"
                   >
                     Log out
