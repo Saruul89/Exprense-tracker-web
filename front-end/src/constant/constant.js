@@ -1,1 +1,1 @@
-export const BACKEND_ENDPOINT = "http://localhost:8100";
+export const BACKEND_ENDPOINT = "https://exprense-tracker-web-2.onrender.com";
