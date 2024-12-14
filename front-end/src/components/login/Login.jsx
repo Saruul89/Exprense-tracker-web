@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { BACKEND_ENDPOINT } from "@/constant/constant.js";
 
 const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -25,7 +26,7 @@ const Login = () => {
     onSubmit: async (values) => {
       setErrorMessage("");
       try {
-        const response = await fetch("http://localhost:8100/login", {
+        const response = await fetch(`${BACKEND_ENDPOINT}/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

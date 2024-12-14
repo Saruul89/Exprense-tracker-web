@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import LoginLogo from "@/components/login/LoginLogo";
+import { BACKEND_ENDPOINT } from "@/constant/constant";
 
 const Signup = () => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -32,7 +33,7 @@ const Signup = () => {
     onSubmit: async (values) => {
       setErrorMessage("");
       try {
-        const response = await fetch("http://localhost:8100/sign-up", {
+        const response = await fetch(`${BACKEND_ENDPOINT}/sign-up`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
