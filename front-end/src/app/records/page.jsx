@@ -1,6 +1,6 @@
 "use client";
 
-import Header from "@/components/dashboard-components/header/Header";
+import Header from "@/components/dashboard-components/tolgoi/Header";
 import RecordsHero from "@/components/record/RecordsHero";
 import RecordsMenu from "@/components/record/RecordsMenu";
 import { BACKEND_ENDPOINT } from "@/constant/constant";

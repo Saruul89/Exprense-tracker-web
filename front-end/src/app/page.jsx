@@ -1,4 +1,4 @@
-import Header from "@/components/dashboard-components/Header/Header";
+import Header from "@/components/dashboard-components/tolgoi/Header";
 import Login from "../components/login/Login";
 import SignUp from "./sign-up/page";
 
